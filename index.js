@@ -50,71 +50,59 @@ function eliminarNodo(idNodo) {
 }
 
 function mostrarMatriz(ubicacion) {
-    console.log(baseDatos);
-    var elementos = document.getElementsByClassName("control");
-    var vertices = [];
-    for (i = 1; i < elementos.length; i++) {
-        vertices.push(elementos[i].id);
+    var elementosOrigen = document.getElementsByClassName("origen");
+    var elementosDestino = document.getElementsByClassName("destino");
+    var verticesOrigen = [];
+    var verticesDestino = [];
+    var filas=0;
+    var columnas=0;
+    for (i = 1; i < elementosOrigen.length; i++) {
+        verticesOrigen.push(elementosOrigen[i].id);
+        filas++;
     }
-
+    for (i = 1; i < elementosDestino.length; i++) {
+        verticesDestino.push(elementosDestino[i].id);
+        columnas++;
+    }
     var matriz = [];
-    matriz = cerearMatriz(matriz, vertices.length);
+    //Creamos y paralelamente cereamos la matriz
+    for (var f=0; f<filas; f++){
+        //Creamos un nuevo array que representa cada fila dentro de la tabla
+        var nuevoArray=[];
+        for (var c=0; c<columnas; c++){
+            //Hacemos push de ceros en el array de acuerdo a la cantidad de columnas que deseamos que tenga
+            nuevoArray.push(0);
+        }
+        // Por ultimo hacemos un push del array dentro de la matriz habiendo concluido una fila
+        matriz.push(nuevoArray);
+    }
+    //Llenamos la matriz con los atributos de la BDD
     for (f = 0; f < baseDatos.length; f++) {
         var origen = baseDatos[f]["llave"].substr(0, 36);
         var destino = baseDatos[f]["llave"].substr(-36);
-        var posicion = vertices.length * (vertices.indexOf(origen)) + vertices.indexOf(destino);
-        matriz[posicion] = parseInt(baseDatos[f].valor, 10);
+        var posicionFila = parseInt(verticesOrigen.indexOf(origen),10);
+        var posicionColumna = parseInt(verticesDestino.indexOf(destino),10);
+        matriz[posicionFila][posicionColumna] = parseInt(baseDatos[f].valor,10);
     }
-    let j = Math.sqrt(matriz.length);
-
-    let aux = 0;
+    console.log(matriz);
     let html = `
-        <table>
+    <table>
             <tr>
                 <th></th>`;
-    for (s = 0; s < j; s++) {
-        html += `<th>${getNombreEstacion(s)}</th>`;
+    for (c = 0; c < columnas; c++) {
+        html += `<th>${getNombreDestino(c)}</th>`;
     }
-    html += `<th>Suma</th>`
     html += `</tr>`;
 
-    for (l = 0; l < j; l++) {
-        html += `<tr><td>${getNombreEstacion(l)}</td>`;
-        for (m = 0; m < j; m++) {
-            html += `<td>${matriz[aux]}</td>`;
-            aux++;
+    for (f = 0; f <filas; f++) {
+        html += `<tr><td>${getNombreOrigen(f)}</td>`;
+        for (c = 0; c < columnas; c++) {
+            html += `<td>${matriz[f][c]}</td>`;
         }
-
-        //suma filas
-        var suma = 0;
-        for (s1 = l * j; s1 < (l * j) + j; s1++) {
-            suma += matriz[s1];
-        }
-        html += `<td>${suma}</td>`
         html += `</tr>`;
     }
-
-    //suma columnas
-    var sumaGeneral = 0;
-    html += `<td>Suma</td>`
-    for (i = 0; i < j; i++) {
-        var sumaC = 0;
-        for (s2 = i; s2 < j * j; s2 += j) {
-            sumaC += matriz[s2];
-        }
-        sumaGeneral += sumaC;
-        html += `<td>${sumaC}</td>`
-    }
-    html += `<td>${sumaGeneral}</td>`
     html += `</table>`;
     $(ubicacion).html(html);
-}
-
-function cerearMatriz(matriz, n) {
-    for (i = 0; i < n * n; i++) {
-        matriz[i] = 0;
-    }
-    return matriz;
 }
 
 // PDF
@@ -157,10 +145,17 @@ function funcionFondoCB() {
     }
 }
 
-function getNombreEstacion(index) {
-    nodos = document.getElementsByClassName("control");
+function getNombreOrigen(index) {
+    nodos = document.getElementsByClassName("origen");
     contenido = nodos[index + 1].innerHTML;
-    nombre = contenido.substr(contenido.indexOf("Nodo"), contenido.length);
+    nombre = contenido.substr(contenido.indexOf("Origen"), contenido.length);
+    return nombre;
+}
+
+function getNombreDestino(index) {
+    nodos = document.getElementsByClassName("destino");
+    contenido = nodos[index + 1].innerHTML;
+    nombre = contenido.substr(contenido.indexOf("Destino"), contenido.length);
     return nombre;
 }
 
@@ -236,8 +231,31 @@ function matrizMinimizacion(){
             }
         }
     }
-    mostrarTablaMatrizMin(matriz,minimosColumnas, '#matriz-minimizacion', dimension);
-    generarMatrizA1Min(matriz,minimosColumnas, dimension);
+    let html = `
+        <table>
+            <tr>
+                <th></th>`;
+    for (c = 0; c < verticesColumnas; c++) {
+        html += `<th>${getNombreEstacion(c)}</th>`;
+    }
+    html += `</tr>`;
+
+    for (f = 0; f <d; f++) {
+        html += `<tr><td>${getNombreEstacion(f)}</td>`;
+        for (c = 0; c < d; c++) {
+            html += `<td>${matriz[f][c]}</td>`;
+        }
+        html += `</tr>`;
+    }
+
+    html+= `<tr>`;
+    html+= `<td>Minimos</td>`
+    for (c=0; c<d; c++){
+        html+=`<td>${minCol[c]}</td>`
+    }
+    html+=`</tr>`;
+    html += `</table>`;
+    $(ubicacion).html(html);
 }
 function generarMatrizA1Min(matriz,minCol, d){
     console.log("Matriz Inicial: ", matriz);
