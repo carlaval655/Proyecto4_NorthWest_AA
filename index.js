@@ -242,61 +242,66 @@ function guardarOfDem(){
 }
 
 function esquinaNoroeste(){
-    var colExtra = [];
-    for(ofer=0; ofer<ofertas.length; ofer++){
-        colExtra.push(ofertas[ofer].oferta);
-    }
-    var filExtra = [];
-    for(dm=0; dm<demandas.length; dm++){
-        filExtra.push(demandas[dm].demanda);
-    }
-    coordenadas = [];
-    var res = [];
-    var val = [];
-    var x = 0;
-    var y = 0;
-    var origen = document.getElementsByClassName('origen');
-    var destino = document.getElementsByClassName('destino');
-    while(x<origen.length && y<destino.length){
-        //Se consigue la esquina noroeste.
-        var nor = parseInt(matriz[x][y]);
-        console.log("La esquina noroeste en este caso es: "+nor);
-        console.log(colExtra[x]+"----"+filExtra[y]);
-        console.log(x+"---"+y);
-        coordenadas.push({fila: x, columna: y});
-        if(parseInt(colExtra[x])>parseInt(filExtra[y])){
-            //La oferta es mayor que la demanda en este caso.
-            colExtra[x] = parseInt(colExtra[x])-parseInt(filExtra[y]);
-            res.push(parseInt(matriz[x][y]));
-            console.log("La "+filExtra[y]+" se elimina.");
-            val.push(parseInt(filExtra[y]));
-            //Se sigue a la siguiente columna.
-            y++;
-        } else if(parseInt(colExtra[x])<parseInt(filExtra[y])){
-            //La demanda es mayor que la oferta en este caso.
-            filExtra[y] = parseInt(filExtra[y])-parseInt(colExtra[x]);
-            res.push(parseInt(matriz[x][y]));
-            console.log("La "+colExtra[x]+" se elimina.");
-            val.push(parseInt(colExtra[x]));
-            //Se sigue a la siguiente hilera/fila.
-            x++;
-        } else if(parseInt(colExtra[x])==parseInt(filExtra[y])){
-            //La demanda y la oferta son iguales.
-            res.push(parseInt(matriz[x][y]));//Se guarda el valor de esta esquina noroeste.
-            val.push(parseInt(colExtra[x]));//Se guarda el valor de usado.
-            console.log("La y la oferta se elimina.");
-            //Se sigue con la siguiente columna e hilera/fila.
-            x++;
-            y++;
-            break;
+    if(ofertas.length!=0 && demandas.length!=0){
+        mostrarMatriz();
+        var colExtra = [];
+        for(ofer=0; ofer<ofertas.length; ofer++){
+            colExtra.push(ofertas[ofer].oferta);
         }
+        var filExtra = [];
+        for(dm=0; dm<demandas.length; dm++){
+            filExtra.push(demandas[dm].demanda);
+        }
+        coordenadas = [];
+        var res = [];
+        var val = [];
+        var x = 0;
+        var y = 0;
+        var origen = document.getElementsByClassName('origen');
+        var destino = document.getElementsByClassName('destino');
+        while(x<(origen.length-1) && y<(destino.length-1)){
+            //Se consigue la esquina noroeste.
+            var nor = parseInt(matriz[x][y]);
+            console.log("La esquina noroeste en este caso es: "+nor);
+            console.log(colExtra[x]+"----"+filExtra[y]);
+            console.log(x+"---"+y);
+            coordenadas.push({fila: x, columna: y});
+            if(parseInt(colExtra[x])==parseInt(filExtra[y])){
+                //La demanda y la oferta son iguales.
+                res.push(parseInt(matriz[x][y]));//Se guarda el valor de esta esquina noroeste.
+                val.push(parseInt(colExtra[x]));//Se guarda el valor de usado.
+                console.log("La y la oferta se elimina.");
+                //Se sigue con la siguiente columna e hilera/fila.
+                x++;
+                y++;
+            } else if(parseInt(colExtra[x])<parseInt(filExtra[y])){
+                //La demanda es mayor que la oferta en este caso.
+                filExtra[y] = parseInt(filExtra[y])-parseInt(colExtra[x]);
+                res.push(parseInt(matriz[x][y]));
+                console.log("La "+colExtra[x]+" se elimina.");
+                val.push(parseInt(colExtra[x]));
+                //Se sigue a la siguiente hilera/fila.
+                x++;
+            } else{
+                //La oferta es mayor que la demanda en este caso.
+                colExtra[x] = parseInt(colExtra[x])-parseInt(filExtra[y]);
+                res.push(parseInt(matriz[x][y]));
+                console.log("La "+filExtra[y]+" se elimina.");
+                val.push(parseInt(filExtra[y]));
+                //Se sigue a la siguiente columna.
+                y++;
+            }
+        }
+        //res.extend(val);
+        for(i=0; i<val.length; i++){
+            res.push(val[i]);
+        }
+        console.log(res);
+        mostrarMinimizacion(res);
+    }else{
+        window.alert('Debe ingresar las ofertas y demandas antes de continuar');
     }
-    //res.extend(val);
-    for(i=0; i<val.length; i++){
-        res.push(val[i]);
-    }
-    console.log(res);
-    mostrarMinimizacion(res);
+    
 }
 function mostrarMinimizacion(res){
     var filas = document.getElementsByClassName("origen");
