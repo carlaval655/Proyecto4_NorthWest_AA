@@ -1,6 +1,10 @@
 var baseDatos = [];
+var matriz = [];
 var demandas = [];
 var ofertas = [];
+var coordenadas = [];
+var flag = false;
+
 function valorActual(buscar) {
     let i = 0;
     baseDatos.forEach(function (elemento) {
@@ -39,8 +43,6 @@ function eliminarAtributoArray(key) {
 }
 
 function eliminarNodo(idNodo) {
-    var elementos = document.getElementsByClassName("control");
-    
     for (i = 0; i < baseDatos.length; i++) {
         if ((baseDatos[i].llave).includes(idNodo)) {
             baseDatos.splice(i, 1);
@@ -65,7 +67,7 @@ function mostrarMatriz(ubicacion) {
         verticesDestino.push(elementosDestino[i].id);
         columnas++;
     }
-    var matriz = [];
+    matriz = [];
     //Creamos y paralelamente cereamos la matriz
     for (var f=0; f<filas; f++){
         //Creamos un nuevo array que representa cada fila dentro de la tabla
@@ -93,16 +95,28 @@ function mostrarMatriz(ubicacion) {
     for (c = 0; c < columnas; c++) {
         html += `<th>${getNombreDestino(c)}</th>`;
     }
-    html += `</tr>`;
+    if(flag==true){
+        html += `<th>Ofertas</th>`;
+    }
+    html +=`</tr>`;
 
     for (f = 0; f <filas; f++) {
         html += `<tr><td>${getNombreOrigen(f)}</td>`;
         for (c = 0; c < columnas; c++) {
             html += `<td>${matriz[f][c]}</td>`;
         }
-        html += `</tr>`;
+        if(flag==true){
+            html += `<td>${ofertas[f].oferta}</td></tr>`;
+        }
     }
-    html += `</table>`;
+    if(flag==true){
+        html += `<tr><td>Demandas</td>`;
+        for(k=0; k<columnas; k++){
+            html+=`<td>${demandas[k].demanda}</td>`;
+        }
+        html+=`</tr>`;
+    }
+    html +=`</table>`;
     $(ubicacion).html(html);
 }
 
@@ -224,4 +238,171 @@ function guardarOfDem(){
     }
     console.log(ofertas);
     console.log(demandas);
+    flag = true;
+}
+
+function esquinaNoroeste(){
+    var ofertas1 = [];
+    for(ofer=0; ofer<ofertas.length; ofer++){
+        ofertas1.push(ofertas[ofer]);
+    }
+    var demandas1 = [];
+    for(dm=0; dm<demandas.length; dm++){
+        demandas1.push(demandas[dm]);
+    }
+    coordenadas = [];
+    var res = [];
+    var val = [];
+    var x = 0;
+    var y = 0;
+    var origen = document.getElementsByClassName('origen');
+    var destino = document.getElementsByClassName('destino');
+    while(x<origen.length && y<destino.length){
+        //Se consigue la esquina noroeste.
+        var nor = parseInt(matriz[x][y]);
+        console.log("La esquina noroeste en este caso es: "+nor);
+        console.log(ofertas1[x].oferta+"----"+demandas1[y].demanda);
+        console.log(x+"---"+y);
+        coordenadas.push({fila: x, columna: y});
+        if(parseInt(ofertas1[x].oferta)>parseInt(demandas1[y].demanda)){
+            //La oferta es mayor que la demanda en este caso.
+            ofertas1[x].oferta = parseInt(ofertas1[x].oferta)-parseInt(demandas1[y].demanda);
+            res.push(parseInt(matriz[x][y]));
+            console.log("La demanda "+demandas1[y].demanda+" se elimina.");
+            val.push(parseInt(demandas1[y].demanda));
+            //Se sigue a la siguiente columna.
+            y++;
+        } else if(parseInt(ofertas1[x].oferta)<parseInt(demandas1[y].demanda)){
+            //La demanda es mayor que la oferta en este caso.
+            demandas1[y].demanda = parseInt(demandas1[y].demanda)-parseInt(ofertas1[x].oferta);
+            res.push(parseInt(matriz[x][y]));
+            console.log("La oferta "+ofertas1[x].oferta+" se elimina.");
+            val.push(parseInt(ofertas1[x].oferta));
+            //Se sigue a la siguiente hilera/fila.
+            x++;
+        } else if(parseInt(ofertas1[x].oferta)==parseInt(demandas1[y].demanda)){
+            //La demanda y la oferta son iguales.
+            res.push(parseInt(matriz[x][y]));//Se guarda el valor de esta esquina noroeste.
+            val.push(parseInt(ofertas1[x].oferta));//Se guarda el valor de oferta demanda usado.
+            console.log("La demanda y la oferta se elimina.");
+            //Se sigue con la siguiente columna e hilera/fila.
+            x++;
+            y++;
+            break;
+        }
+    }
+    //res.extend(val);
+    for(i=0; i<val.length; i++){
+        res.push(val[i]);
+    }
+    console.log(res);
+    mostrarMinimizacion(res);
+}
+function mostrarMinimizacion(res){
+    var filas = document.getElementsByClassName("origen");
+    var columnas = document.getElementsByClassName("destino");
+    mostrarMatrizMinimo(filas.length-1, columnas.length-1);
+    mostrarMatrizFuncionCosto(res, filas.length-1, columnas.length-1);
+    mostrarTotal(res);
+}
+function mostrarMatrizMinimo(filas, columnas){
+    let html = `
+    <table>
+            <tr>
+                <th></th>`;
+    for (c = 0; c < columnas; c++) {
+        html += `<th>${getNombreDestino(c)}</th>`;
+    }
+    if(flag==true){
+        html += `<th>Ofertas</th>`;
+    }
+    html +=`</tr>`;
+
+    for (f = 0; f <filas; f++) {
+        html += `<tr><td>${getNombreOrigen(f)}</td>`;
+        for (c = 0; c < columnas; c++) {
+            if(buscarCoordenada(f, c)){
+                html += `<td style="background-color : #62D6E6;">${matriz[f][c]}</td>`;
+            } else {
+                html += `<td>${matriz[f][c]}</td>`;
+            }
+        }
+        if(flag==true){
+            html += `<td>${ofertas[f].oferta}</td></tr>`;
+        }
+    }
+    if(flag==true){
+        html += `<tr><td>Demandas</td>`;
+        for(k=0; k<columnas; k++){
+            html+=`<td>${demandas[k].demanda}</td>`;
+        }
+        html+=`</tr>`;
+    }
+    html +=`</table>`;
+    $("#matriz-minimizacion").html(html);
+}
+function mostrarMatrizFuncionCosto(res, filas, columnas){
+    var cantidad = [];
+    for(i=(res.length/2); i<res.length; i++){
+        cantidad.push(res[i]);
+    }
+    let html = `
+    <table>
+            <tr>
+                <th></th>`;
+    for (c = 0; c < columnas; c++) {
+        html += `<th>${getNombreDestino(c)}</th>`;
+    }
+    if(flag==true){
+        html += `<th>Ofertas</th>`;
+    }
+    html +=`</tr>`;
+
+    var aux = 0;
+    for (f = 0; f <filas; f++) {
+        html += `<tr><td>${getNombreOrigen(f)}</td>`;
+        for (c = 0; c < columnas; c++) {
+            if(buscarCoordenada(f,c)){
+                html += `<td style="background-color : #62D6E6;">${cantidad[aux]}</td>`;
+                aux++;
+            } else {
+                html += `<td>0</td>`;
+            }
+        }
+        if(flag==true){
+            html += `<td>${ofertas[f].oferta}</td></tr>`;
+        }
+    }
+    if(flag==true){
+        html += `<tr><td>Demandas</td>`;
+        for(k=0; k<columnas; k++){
+            html+=`<td>${demandas[k].demanda}</td>`;
+        }
+        html+=`</tr>`;
+    }
+    html +=`</table>`;
+    $("#funcion-costo-minimo").html(html);
+}
+function buscarCoordenada(f, c){
+    var flag = false;
+    for(i=0; i<coordenadas.length; i++){
+        if(coordenadas[i].fila==f && coordenadas[i].columna==c){
+            flag = true;
+            break;
+        }
+    }
+    return flag;
+}
+function mostrarTotal(res){
+    let html = ``;
+    var total = 0;
+    for(i=0; i<(res.length/2); i++){
+        total = total + (parseInt(res[i])*parseInt(res[(res.length/2)+i]));
+        html+=`(${res[i]}*${res[(res.length/2)+i]})`;
+        if(i!=((res.length/2)-1)){
+            html+=`+`;
+        }
+    }
+    html+=` = ${total}`;
+    $("#calculo-resultado-minimo").html(html);
 }

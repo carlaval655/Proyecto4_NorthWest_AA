@@ -129,20 +129,13 @@
           connector: "Straight", //Bezier, Flowchart, Straight, StateMachine
           overlays: [["Arrow", { location: 0.9, width: 20, length: 20, foldback: 0.9 }],
           ["Label", { label: "", labelLocation: 0.5 }]]
-        }//----------------------------------------------------------------------------------//
+        }
         , "red-connection": {
           paintStyle: { stroke: "red", strokeWidth: 2 },
           hoverPaintStyle: { stroke: "#E43B45", strokeWidth: 3 },
           connector: "Straight", //Bezier, Flowchart, Straight, StateMachine
           overlays: [["Arrow", { location: 0.9, width: 20, length: 20, foldback: 0.9 }],
           ["Label", { label: "${label}", location: 0.25 }]]
-        }
-        , "rose-connection": {
-          paintStyle: { stroke: "#E30052", strokeWidth: 2 },
-          hoverPaintStyle: { stroke: "#FE4164", strokeWidth: 3 },
-          connector: "Straight", //Bezier, Flowchart, Straight, StateMachine
-          overlays: [["Arrow", { location: 0.9, width: 20, length: 20, foldback: 0.9 }],
-          ["Label", { label: "", location: 0.25 }]]
         }
       });
 
@@ -269,25 +262,6 @@
       });
     }
 
-    //Cambiar color de la flecha
-    function cambiarColor(conexion, holgura) {
-        let value = conexion.valor;
-        let sourceId = conexion.llave.substr(0,36);
-        let targetId = conexion.llave.substr(-36);
-        var conn = instance.getConnections({
-            source: sourceId,
-            target: targetId
-        });
-        if (conn[0]) {
-          instance.deleteConnection(conn[0]);
-        }
-        if(holgura==0){
-          crearNuevaFlechaColor(sourceId, targetId, value, holgura, "rose-connection");
-        } else{
-          crearNuevaFlechaColor(sourceId, targetId, value, holgura, "green-connection");
-        }
-    }
-
     function crearNuevaFlechaColor(src, trg, value, holgura, tipo) {
       var endpoint1 = instance.getEndpoints(src)[0];
       if (!endpoint1.isSource) {
@@ -385,7 +359,7 @@
   </div>
 </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" id="GenerarInfo" onclick="matrizMinimizar()">Minimizar</button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">Minimizar</button>
 
   <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
   <div class="modal fade" id="minimizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -405,16 +379,16 @@
             </div>
           </center>
 
-          <h6>Matriz A1</h6>
+          <h6>Función costo mínimo</h6>
           <center>
-            <div id="a1-minimizacion" class="modal-body">
+            <div id="funcion-costo-minimo" class="modal-body">
               <!-- Tabla de valores -->
             </div>
           </center>
           
-          <h6>Matriz A2</h6>
+          <h6>El resultado es:</h6>
           <center>
-            <div id="a2-minimizacion" class="modal-body">
+            <div id="calculo-resultado-minimo" class="modal-body">
               <!-- Tabla de valores -->
             </div>
           </center>
@@ -426,7 +400,7 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#maximizacion" id="GenerarInfo" onclick="matrizMaximizacion()">Maximizar</button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#maximizacion" onclick="matrizMaximizacion()">Maximizar</button>
 
   <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
   <div class="modal fade" id="maximizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
