@@ -357,6 +357,34 @@
     </div>
   </div>
 
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ofertaDemanda" style="margin-left: 20px;"
+  onclick="mostrarInputOfertasyDemandas()">Ingresar ofertas y demandas</button>
+
+<!-- Modal - ventalla emergente - Ingreso de Ofertas y Demandas -->
+<div class="modal fade" id="ofertaDemanda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content" id="matriz-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ofertas - Demandas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="ofertas" class="modal-body">
+        <!-- Tabla de valores -->
+      </div>
+      <div id="demandas" class="modal-body">
+        <!-- Tabla de valores -->
+      </div>
+      <div class="modal-footer" id="matriz-footer">
+        <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>-->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="guardarOfDem()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" id="GenerarInfo" onclick="matrizMinimizar()">Minimizar</button>
 
   <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
