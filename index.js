@@ -242,13 +242,13 @@ function guardarOfDem(){
 }
 
 function esquinaNoroeste(){
-    var ofertas1 = [];
+    var colExtra = [];
     for(ofer=0; ofer<ofertas.length; ofer++){
-        ofertas1.push(ofertas[ofer]);
+        colExtra.push(ofertas[ofer].oferta);
     }
-    var demandas1 = [];
+    var filExtra = [];
     for(dm=0; dm<demandas.length; dm++){
-        demandas1.push(demandas[dm]);
+        filExtra.push(demandas[dm].demanda);
     }
     coordenadas = [];
     var res = [];
@@ -261,30 +261,30 @@ function esquinaNoroeste(){
         //Se consigue la esquina noroeste.
         var nor = parseInt(matriz[x][y]);
         console.log("La esquina noroeste en este caso es: "+nor);
-        console.log(ofertas1[x].oferta+"----"+demandas1[y].demanda);
+        console.log(colExtra[x]+"----"+filExtra[y]);
         console.log(x+"---"+y);
         coordenadas.push({fila: x, columna: y});
-        if(parseInt(ofertas1[x].oferta)>parseInt(demandas1[y].demanda)){
+        if(parseInt(colExtra[x])>parseInt(filExtra[y])){
             //La oferta es mayor que la demanda en este caso.
-            ofertas1[x].oferta = parseInt(ofertas1[x].oferta)-parseInt(demandas1[y].demanda);
+            colExtra[x] = parseInt(colExtra[x])-parseInt(filExtra[y]);
             res.push(parseInt(matriz[x][y]));
-            console.log("La demanda "+demandas1[y].demanda+" se elimina.");
-            val.push(parseInt(demandas1[y].demanda));
+            console.log("La "+filExtra[y]+" se elimina.");
+            val.push(parseInt(filExtra[y]));
             //Se sigue a la siguiente columna.
             y++;
-        } else if(parseInt(ofertas1[x].oferta)<parseInt(demandas1[y].demanda)){
+        } else if(parseInt(colExtra[x])<parseInt(filExtra[y])){
             //La demanda es mayor que la oferta en este caso.
-            demandas1[y].demanda = parseInt(demandas1[y].demanda)-parseInt(ofertas1[x].oferta);
+            filExtra[y] = parseInt(filExtra[y])-parseInt(colExtra[x]);
             res.push(parseInt(matriz[x][y]));
-            console.log("La oferta "+ofertas1[x].oferta+" se elimina.");
-            val.push(parseInt(ofertas1[x].oferta));
+            console.log("La "+colExtra[x]+" se elimina.");
+            val.push(parseInt(colExtra[x]));
             //Se sigue a la siguiente hilera/fila.
             x++;
-        } else if(parseInt(ofertas1[x].oferta)==parseInt(demandas1[y].demanda)){
+        } else if(parseInt(colExtra[x])==parseInt(filExtra[y])){
             //La demanda y la oferta son iguales.
             res.push(parseInt(matriz[x][y]));//Se guarda el valor de esta esquina noroeste.
-            val.push(parseInt(ofertas1[x].oferta));//Se guarda el valor de oferta demanda usado.
-            console.log("La demanda y la oferta se elimina.");
+            val.push(parseInt(colExtra[x]));//Se guarda el valor de usado.
+            console.log("La y la oferta se elimina.");
             //Se sigue con la siguiente columna e hilera/fila.
             x++;
             y++;

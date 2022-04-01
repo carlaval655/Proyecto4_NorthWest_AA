@@ -359,7 +359,7 @@
   </div>
 </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">Minimizar</button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">NorthWest</button>
 
   <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
   <div class="modal fade" id="minimizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -367,19 +367,19 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content" id="matriz-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Minimizacion</h5>
+          <h5 class="modal-title" id="exampleModalLabel">NorthWest</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-          <h6>Matriz de adyacencia</h6>
+          <h6>Matriz de adyacencia:</h6>
           <center>
             <div id="matriz-minimizacion" class="modal-body">
               <!-- Tabla de valores -->
             </div>
           </center>
 
-          <h6>Función costo mínimo</h6>
+          <h6>Función de optimización:</h6>
           <center>
             <div id="funcion-costo-minimo" class="modal-body">
               <!-- Tabla de valores -->
@@ -400,46 +400,6 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#maximizacion" onclick="matrizMaximizacion()">Maximizar</button>
-
-  <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
-  <div class="modal fade" id="maximizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content" id="matriz-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Minimizacion</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-          <h6>Matriz de adyacencia</h6>
-          <center>
-            <div id="matriz-maximizacion" class="modal-body">
-              <!-- Tabla de valores -->
-            </div>
-          </center>
-
-          <h6>Matriz A1</h6>
-          <center>
-            <div id="a1-maximizacion" class="modal-body">
-              <!-- Tabla de valores -->
-            </div>
-          </center>
-          
-          <h6>Matriz A2</h6>
-          <center>
-            <div id="a2-maximizacion" class="modal-body">
-              <!-- Tabla de valores -->
-            </div>
-          </center>
-        <div class="modal-footer" id="matriz-footer">
-          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>-->
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
-        </div>
-      </div>
-    </div>
-  </div>
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#informacion" id="GenerarInfo"
     onclick="mostrarMatriz('#matrizDeAdyacenciaInfo')">Generar información</button>
   
