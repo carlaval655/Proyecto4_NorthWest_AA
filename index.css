@@ -109,6 +109,9 @@ body {
 .control img {
   margin-top: 15px;
 }
+.destino{
+  border-color: #f8a48d !important;
+}
 
 #tablaMatriz {
   margin: 0 auto;
