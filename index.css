@@ -28,9 +28,8 @@ body {
 }
 
 #diagram {
-  background: url("./resources/images/Imagen1.png") no-repeat;
+  background: url("./resources/Imagen1.png") no-repeat;
   border-radius: 15px;
-  height: 80vh !important;
 }
 
 #contenedor-cb {
@@ -170,12 +169,6 @@ nav li {
   padding: 5px;
 }
 
-nav li:hover {
-  background-color: #6a676d42;
-  border-radius: 5px;
-  padding: 5px;
-  cursor: pointer;
-}
 .custom-menu{
     display: flex;
     flex-direction: column;
@@ -203,119 +196,27 @@ nav li:hover {
  justify-content: flex-start;
 }
 
-#contactos{
-  max-height: 550px;
-  overflow: auto;
+/*Parte de habilitar*/
+.habilitar {
+  background-color: #62D6E6;
+  text-align: right;
+  display:none;
 }
-
-/*cartas*/
- *, *:before, *:after {
-  box-sizing: border-box;
+#botonMovilidad{
+  margin: 5px;
 }
-
-.slide-container {
-  margin: auto;
-  text-align: center;
-}
-
-.wrapper {
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
-.wrapper:focus {
-  outline: 0;
-}
-
-.p-card {
-  background: white;
-  width: 300px;
-  display: inline-block;
-  margin: auto;
-  border-radius: 19px;
-  position: relative;
-  text-align: center;
-  box-shadow: -1px 15px 30px -12px black;
-  z-index: 9999;
-}
-
-.card__image {
-  position: relative;
-  height: 230px;
-  margin-bottom: 35px;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-}
-
-.card__image--person {
-  background: url('https://concepto.de/wp-content/uploads/2014/08/programacion-2-e1551291144973.jpg');
-  background-size: cover;
-}
-
-.card__image--person img {
-  height: 230px;
-}
-
-.card__title {
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-
-.card__title--person {
-  color: #4facff;
-}
-
-.card__name {
-  font-size: 26px;
-  color: black;
-  font-weight: 900;
-  margin-bottom: 5px;
-}
-
-.card__description {
-  padding: 20px;
-  margin-bottom: 10px;
-}
-
-.card__contact--person {
-  background: #4facff;
-}
-
-.card__contact--person .one-third {
-  border-right: 1px solid #309eff;
-}
-
-.card__contact {
-  color: white;
-  font-weight: 700;
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
-}
-
-.card__contact .one-third {
-  width: 33%;
-  float: left;
-  padding: 20px 15px;
-  align-items: center;
-}
-
-.card__contact .one-third img{
-  height: 90%;
-  width: 90%;
-}
-
-.card__contact .no-border {
-  border-right: none;
-}
-
-.clearfix:after {
-  visibility: hidden;
+.habilitar-activo {
   display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
+} 
+#nombreArchivo{
+  border: #616961 0.1 solid;
+  border-radius: 5px;
 }
-/*Fin Estilo cartas*/
+
+#casita:hover {
+  background-color: #6a676d42;
+}
+
+h3 {
+  font-size: 2.2vw;
+}

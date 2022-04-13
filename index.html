@@ -46,14 +46,16 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Icono -->
-  <link rel="shortcut icon" type="image/x-icon" href="./resources/otros/modelado.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="./resources/modelado.ico">
 </head>
 
 <!-- Navegación principal -->
 <nav>
   <ul>
-
-    <li class="nav-item" id="nombreEmpresa"><img src="resources\images\modelado.png" alt="logo_graphy"
+    <li style="position: absolute; top: 15px; left: 20px; width: 50px;" id="casita"><a href="#">
+      <img style="width: 40px;" src="./resources/casita.png" alt="atras">
+    </a></li>
+    <li id="nombreEmpresa"><img src="./resources/modelado.png" alt="logo_graphy"
         style="height: 50px;">Graphy</li>
   </ul>
 </nav>
@@ -77,12 +79,12 @@
           </ul>
           <div class="control new origen"  id="cajita">
             <!-- Estacion vacunas -->
-            <img src="./resources/images/nodo.png" alt="estacion" width="45px" height="45px">
+            <img src="./resources/northwest/nodo.png" alt="estacion" width="45px" height="45px">
             <h6>Origen</h6>
           </div>
           <div class="control new destino"  id="cajita">
             <!-- Estacion vacunas -->
-            <img src="./resources/images/destino.png" alt="estacion" width="45px" height="45px">
+            <img src="./resources/northwest/destino.png" alt="estacion" width="45px" height="45px">
             <h6>Destino</h6>
           </div>
         </div>
@@ -90,7 +92,10 @@
 
       <!-- Div para el diagrama -->
       <div class="col-md-9">
-        <div id="diagram" style="height: 90vh; position: relative">
+        <div id="habilitar-div" class="habilitar">
+          <button id="botonMovilidad" class="btn btn-success" onclick="drag()">Habilitar edición</button>
+        </div>
+        <div id="diagram" style="height: 80vh !important; position: relative">
           <!--Cajitas -- holguras-->
           <div id="holgurasCuadros"></div>
         </div>
@@ -262,23 +267,70 @@
       });
     }
 
-    function crearNuevaFlechaColor(src, trg, value, holgura, tipo) {
-      var endpoint1 = instance.getEndpoints(src)[0];
-      if (!endpoint1.isSource) {
-        endpoint1 = instance.getEndpoints(src)[1];
+    //Agregar movilidad a los elementos subidos.
+    function drag(){
+      $(".jtk-endpoint").remove();
+      $(".jtk-connector").remove();
+      $(".jtk-overlay").remove();  
+      instance.draggable($('.control'));
+      agregarEndPoints();
+      generarConexiones();
+      eliminarBloqueComentario();
+      document.querySelector("#habilitar-div").classList.remove('habilitar-activo');
+      var nodosOrigen = document.getElementsByClassName('origen');
+      var nodosDestino = document.getElementsByClassName('destino');
+      //Actualizando contador nodos de origen
+      for(i=1; i<nodosOrigen.length; i++){
+        var nombreNodo = nodosOrigen[i].getElementsByTagName('h6')[0].innerText;
+        var numero = parseInt(nombreNodo.substr(7, nombreNodo.length));
+        console.log(nombreNodo.substr(7, nombreNodo.length));
+        contadorOrigen = numero+1;
       }
-      var endpoint2 = instance.getEndpoints(trg)[0];
-      if (!endpoint2.isTarget) {
-        endpoint2 = instance.getEndpoints(trg)[1];
+      //Actualizando contador nodos de destino
+      for(i=1; i<nodosDestino.length; i++){
+        var nombreNodo = nodosDestino[i].getElementsByTagName('h6')[0].innerText;
+        var numero = parseInt(nombreNodo.substr(8, nombreNodo.length));
+        contadorDestino = numero+1;
       }
-      var valor = "h = "+ holgura +"\n"+value;
-      instance.connect({
-        source: endpoint1,
-        target: endpoint2,
-        type: tipo, data: { label: valor }
-      });
     }
-
+    function eliminarBloqueComentario(){
+      $(".contenedor-conexiones").remove();
+    }
+    function generarConexiones(){
+      var htmlDiagram = document.getElementById("diagram").innerHTML;
+      var cadena = htmlDiagram.substring(htmlDiagram.indexOf('llave:'),htmlDiagram.indexOf("|-->"));
+      var elementos = cadena.split('|');
+      for(n=0;n<elementos.length;n++){
+        var llave = elementos[n].substring(elementos[n].indexOf(':')+1,elementos[n].indexOf(','));
+        var valor = elementos[n].substring(elementos[n].indexOf('valor:')+6,elementos[n].length);
+        var sourceId = llave.substring(0,36);
+        var targetId = llave.substring(36,llave.length);
+        crearNuevaFlecha(sourceId,targetId,valor);
+        guardarAtributo(llave,valor);
+      }
+    }
+    function agregarEndPoints(){
+      var nodosOrigen = document.getElementsByClassName('origen');
+      var nodosDestino = document.getElementsByClassName('destino');
+      for(i=1;i<nodosOrigen.length;i++){
+        instance.addEndpoint(nodosOrigen[i].id, {
+            endpoint: ["Dot", { radius: 5 }],  // rectangle, blank, image
+              anchor: "Center",
+              isSource: true,
+              maxConnections: -1,
+              connectionType: "red-connection"
+          });
+      }
+      for(i=1;i<nodosDestino.length;i++){
+          instance.addEndpoint(nodosDestino[i].id, {
+            endpoint: ["Rectangle", { width: 10, height: 10 }],
+              anchor: "Center",
+              isTarget: true,
+              maxConnections: -1,
+              connectionType: "red-connection"
+        });
+      }   
+    }
   </script>
 
   <!-- Modal - ventalla emergente - agregar valor a la flecha -->
@@ -306,8 +358,20 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#matriz" style="margin-left: 20px;"
-    onclick="mostrarMatriz('#tablaMatriz')">Generar matriz</button>
+  <!-- Botones -->
+  <div class = "botones">
+    <!-- Generar matriz -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#matriz" style="margin-left: 20px;" onclick="mostrarMatriz('#tablaMatriz')">Generar matriz</button>
+    <!-- Ingresar ofertas y demandas -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ofertaDemanda" onclick="mostrarInputOfertasyDemandas()">Ingresar ofertas y demandas</button>
+    <!-- Northwest -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">NorthWest</button>
+    <!-- Guardar graphy -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" id="guardarGrafo" data-target="#inputNombreArchivo" onclick="">Guardar graphy</button>
+    <!-- Subir graphy -->
+    <button type="button" class="btn btn-primary" id="subirGrafo">Subir graphy</button>
+    <input type="file" id="file-input" style="display: none;"/>
+  </div>
 
   <!-- Modal - ventalla emergente - matriz generada -->
   <div class="modal fade" id="matriz" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -331,35 +395,30 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ofertaDemanda"
-  onclick="mostrarInputOfertasyDemandas()">Ingresar ofertas y demandas</button>
-
-<!-- Modal - ventalla emergente - Ingreso de Ofertas y Demandas -->
-<div class="modal fade" id="ofertaDemanda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content" id="matriz-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ofertas - Demandas</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div id="ofertas" class="modal-body">
-        <!-- Tabla de valores -->
-      </div>
-      <div id="demandas" class="modal-body">
-        <!-- Tabla de valores -->
-      </div>
-      <div class="modal-footer" id="matriz-footer">
-        <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>-->
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="guardarOfDem()">Aceptar</button>
+  <!-- Modal - ventalla emergente - Ingreso de Ofertas y Demandas -->
+  <div class="modal fade" id="ofertaDemanda" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content" id="matriz-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ofertas - Demandas</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="ofertas" class="modal-body">
+          <!-- Tabla de valores -->
+        </div>
+        <div id="demandas" class="modal-body">
+          <!-- Tabla de valores -->
+        </div>
+        <div class="modal-footer" id="matriz-footer">
+          <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>-->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="guardarOfDem()">Aceptar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">NorthWest</button>
 
   <!-- Modal - ventalla emergente - Matriz de asignacion generada -->
   <div class="modal fade" id="minimizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -400,68 +459,28 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#informacion" id="GenerarInfo"
-    onclick="mostrarMatriz('#matrizDeAdyacenciaInfo')">Generar información</button>
-  
-
-  <!-- Modal - ventalla emergente - informacion generada -->
-  <div class="modal fade" id="informacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content" id="informacion-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Información</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div id="pdf" class="modal-body">
-          <p>
-            <strong>Descripción general:</strong></br>
-            El presente grafo es una demostración de los puntos de vacunación contra COVID-19 que hay en la ciudad de La
-            Paz y la distribución de vacunas de un punto de vacunación a otro. En dicho grafo el usuario agregó distintos
-            puntos de vacunación en el espacio de trabajo designado. Posteriormente se realizaron las conexiones entre los 
-            puntos de vacunación y se modificaron los valores.</br></br>
-            <strong>Matriz de adyacencia:</strong></br>
-          </p>
-          <div id="matrizDeAdyacenciaInfo"></div>
-          <div id="infoCaminoCritico">
-            <!--Informacion del camino critico-->
-          </div>
-        </div>
-        <div class="modal-footer" id="informacion-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" id="generador">Generar PDF</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#contactanos"onclick="">Contáctanos</button>
-
-  <!-- Modal - ventalla emergente - contactanos -->
-  <div class="modal fade" id="contactanos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  <!--Guardar y Subir Graphy-->
+  <!-- Modal - ventana emergente - Nombre del archivo -->
+  <div class="modal fade" id="inputNombreArchivo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Contactanos</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Nombre del archivo</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div id="contactos" class="modal-body">
-          <div class="slide-container" id="informacionContactanos">
-            <!--Lista de integrantes-->
-          </div>
+          <label style="margin-left:2vw;">Ingrese el nombre con el que desea guardar el archivo:</label>
+          <input style="margin-left:8vw;" type="text" id="nombreArchivo">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="guardarGrafo()">Aceptar</button>
         </div>
       </div>
     </div>
   </div>
 </body>
 <script type="text/javascript" src="index.js"></script>
-
 </html>

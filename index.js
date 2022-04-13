@@ -156,7 +156,7 @@ function funcionFondoCB() {
         bg.style.background = "none";
         bg.style.backgroundColor = "#ffffff"
     } else {
-        bg.style.backgroundImage = "url('./resources/images/Imagen1.png')";
+        bg.style.backgroundImage = "url('./resources/Imagen1.png')";
     }
 }
 
@@ -172,33 +172,6 @@ function getNombreDestino(index) {
     contenido = nodos[index + 1].innerHTML;
     nombre = contenido.substr(contenido.indexOf("Destino"), contenido.length);
     return nombre;
-}
-
-//Botón contactanos
-var integrantes = ["Micaela Gordillo", "Alejandra Pacheco", "Naomi Tacachira", "Carla Valencia"];
-window.onload = function contactanos(){
-    let html = '';
-    for (i=0; i<4; i++){
-        html += `
-            <div class="wrapper">
-                <div class="p-card">
-                    <div class="card__image card__image--person"><img src="./resources/images/profileWomen.png" alt="integrante"/></div>
-                    <div class="card__title card__title--person">Integrante</div>
-                    <div class="card__name">${integrantes[i]}</div>
-                    <div class="card__description">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt omnis id laborum itaque distinctio qui
-                    ut officia, perferendis voluptatem, placeat a et dolorem, quod architecto quos inventore veniam odio
-                    nisi?
-                    </div>
-                    <div class="card__contact card__contact--person clearfix">
-                        <a class="one-third" href="#"><img src="./resources/images/facebook.png" alt=""></a>
-                        <a class="one-third" href="#"><img src="./resources/images/whatsapp.png" alt=""></a>
-                        <a class="one-third no-border" href="#"><img src="./resources/images/in.png" alt=""></a>
-                    </div>
-                </div>
-            </div>`
-    }
-    $('#informacionContactanos').html(html);
 }
 
 function mostrarInputOfertasyDemandas(){
@@ -411,3 +384,72 @@ function mostrarTotal(res){
     html+=` = ${total}`;
     $("#calculo-resultado-minimo").html(html);
 }
+
+//--------------------------------------------------------------------------------------------------------------
+//Guardar graphy
+function guardarGrafo(){
+    var nombreArchivo=document.getElementById("nombreArchivo").value;
+    var data = document.getElementById('diagram').innerHTML;
+    var contenidoBDD = "";
+    for(dato=0;dato<baseDatos.length;dato++){
+        contenidoBDD+="llave:"+baseDatos[dato].llave+",valor:"+baseDatos[dato].valor+"|";
+    }
+    data+=`<div class="contenedor-conexiones"><!--${contenidoBDD}--></div>`;
+
+    var textFileAsBlob = new Blob([data], {type:'text/txt'});
+    // Specify the name of the file to be saved
+    var fileNameToSaveAs = nombreArchivo+".txt";
+
+    // create a link for our script to 'click'
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "My Hidden Link";
+    
+    // allow our code to work in webkit & Gecko based browsers
+    // without the need for a if / else block.
+    window.URL = window.URL || window.webkitURL;
+        
+    // Create the link Object.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    // when link is clicked call a function to remove it from
+    // the DOM in case user wants to save a second file.
+    downloadLink.onclick = destroyClickedElement;
+    // make sure the link is hidden.
+    downloadLink.style.display = "none";
+    // add the link to the DOM
+    document.body.appendChild(downloadLink);
+    
+    // click the new link
+    downloadLink.click();
+
+    function destroyClickedElement(event){
+    //remove the link from the DOM
+        document.body.removeChild(event.target);
+    }
+}
+//--------------------------------------------------------------------------------------------------------------
+//Subir grafo
+function subirGrafo(evento){
+    document.getElementById('diagram').innerHTML='';
+    let archivo = evento.target.files[0];
+    if(archivo){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            let contenido = e.target.result;
+            document.getElementById('diagram').innerHTML = contenido;    
+        }
+        reader.readAsText(archivo);
+        document.querySelector("#habilitar-div").classList.add('habilitar-activo');
+    } else {
+        window.alert("No se ha seleccionado un archivo.");   
+    }
+}
+// Funcion para detectar la carga del archivo
+window.addEventListener('load', () => {
+    document.getElementById('file-input').addEventListener('change', subirGrafo);
+});
+
+// Funcion para activar el input-file al presionar el boton Subir graphy.
+document.getElementById("subirGrafo").addEventListener('click', function() {
+    document.getElementById("file-input").click();
+});
