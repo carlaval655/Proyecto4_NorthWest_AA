@@ -214,6 +214,16 @@ function guardarOfDem(){
     flag = true;
 }
 
+function guardarOferta(id, valor){
+    var dato = {id: id, oferta: valor};
+    ofertas.push(dato);
+}
+function guardarDemanda(id, valor){
+    var dato = {id: id, demanda: valor};
+    demandas.push(dato);
+}
+
+
 function esquinaNoroeste(){
     if(ofertas.length!=0 && demandas.length!=0){
         mostrarMatriz();
@@ -395,6 +405,18 @@ function guardarGrafo(){
         contenidoBDD+="llave:"+baseDatos[dato].llave+",valor:"+baseDatos[dato].valor+"|";
     }
     data+=`<div class="contenedor-conexiones"><!--${contenidoBDD}--></div>`;
+
+    var contenidoOfertas= "";
+    for(dato=0;dato<ofertas.length;dato++){
+        contenidoOfertas+="id:"+ofertas[dato].id+",oferta:"+ofertas[dato].oferta+"|";
+    }
+    data+=`<div class="contenedor-ofertas"><!--${contenidoOfertas}--></div>`;
+
+    var contenidoDemandas= "";
+    for(dato=0;dato<demandas.length;dato++){
+        contenidoDemandas+="id:"+demandas[dato].id+",demanda:"+demandas[dato].demanda+"|";
+    }
+    data+=`<div class="contenedor-demandas"><!--${contenidoDemandas}--></div>`;
 
     var textFileAsBlob = new Blob([data], {type:'text/txt'});
     // Specify the name of the file to be saved

@@ -275,6 +275,10 @@
       instance.draggable($('.control'));
       agregarEndPoints();
       generarConexiones();
+      //Nuevo
+      agregarOfertas();
+      agregarDemandas();
+      //
       eliminarBloqueComentario();
       document.querySelector("#habilitar-div").classList.remove('habilitar-activo');
       var nodosOrigen = document.getElementsByClassName('origen');
@@ -295,6 +299,34 @@
     }
     function eliminarBloqueComentario(){
       $(".contenedor-conexiones").remove();
+      $(".contenedor-ofertas").remove();
+      $(".contenedor-demandas").remove();
+      
+    }
+
+    function agregarOfertas(){
+      var contenido = document.getElementsByClassName('contenedor-ofertas')[0].innerHTML;
+      var cadena = contenido.substring(contenido.indexOf('id:'),contenido.indexOf("|-->"));
+      var elementos = cadena.split('|');
+      for(n=0;n<elementos.length;n++){
+        var id = elementos[n].substring(elementos[n].indexOf(':')+1,elementos[n].indexOf(','));
+        var valor = elementos[n].substring(elementos[n].indexOf('oferta:')+7,elementos[n].length);
+        console.log(id);
+        console.log(valor);
+        guardarOferta(id, valor); 
+      }
+    }
+    function agregarDemandas(){
+      var contenido = document.getElementsByClassName('contenedor-demandas')[0].innerHTML;
+      var cadena = contenido.substring(contenido.indexOf('id:'),contenido.indexOf("|-->"));
+      var elementos = cadena.split('|');
+      for(n=0;n<elementos.length;n++){
+        var id = elementos[n].substring(elementos[n].indexOf(':')+1,elementos[n].indexOf(','));
+        var valor = elementos[n].substring(elementos[n].indexOf('demanda:')+8,elementos[n].length);
+        console.log(id);
+        console.log(valor);
+        guardarDemanda(id, valor); 
+      }
     }
     function generarConexiones(){
       var htmlDiagram = document.getElementById("diagram").innerHTML;
