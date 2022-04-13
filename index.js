@@ -118,6 +118,8 @@ function mostrarMatriz(ubicacion) {
     }
     html +=`</table>`;
     $(ubicacion).html(html);
+    console.log(ofertas);
+    console.log(demandas);
 }
 
 // PDF
@@ -178,25 +180,39 @@ function mostrarInputOfertasyDemandas(){
     var origen = document.getElementsByClassName('origen');
     let htmlOrigen=`Ingrese los siguientes valores de las ofertas: <br><center>`;
     for (i=1; i<origen.length; i++){
-        htmlOrigen+=`<label>
-        Oferta - Origen ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
-        style="height:2vw; margin-left:1.5vw;" id="of-${i}"><br>`;
+        if(ofertas.length==origen.length-1){
+            htmlOrigen+=`<label>
+            Oferta - Origen ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+            style="height:2vw; margin-left:1.5vw;" id="of-${i}" value="${ofertas[i-1].oferta}"><br>`;
+        }else{
+            htmlOrigen+=`<label>
+            Oferta - Origen ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+            style="height:2vw; margin-left:1.5vw;" id="of-${i}"><br>`;
+        }
+        
     }
     htmlOrigen+=`</center>`;
     $('#ofertas').html(htmlOrigen);
     var destino = document.getElementsByClassName('destino');
     let htmlDestino=`Ingrese los siguientes valores de las demandas: <br><center>`;
     for (i=1; i<destino.length; i++){
-        htmlDestino+=`<label>
-        Demanda - Destino ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
-        style="height:2vw; margin-left:1.5vw;" id="de-${i}"><br>`;
+        if(demandas.length == destino.length-1){
+            htmlDestino+=`<label>
+            Demanda - Destino ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+            style="height:2vw; margin-left:1.5vw;" id="de-${i}" value="${demandas[i-1].demanda}"><br>`;
+        }else{
+            htmlDestino+=`<label>
+            Demanda - Destino ${i}   </label><input onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+            style="height:2vw; margin-left:1.5vw;" id="de-${i}"><br>`;
+        }
+        
     }
     htmlDestino+=`</center`;
     $('#demandas').html(htmlDestino);
 }
 function guardarOfDem(){
-    ofertas = [];
-    demandas = [];
+    //ofertas = [];
+    //demandas = [];
     var origen = document.getElementsByClassName('origen');
     for (i=1; i<origen.length; i++){
         var of = document.getElementById('of-'+i).value;
@@ -217,10 +233,15 @@ function guardarOfDem(){
 function guardarOferta(id, valor){
     var dato = {id: id, oferta: valor};
     ofertas.push(dato);
+    flag = true;
+    // console.log(ofertas);
 }
 function guardarDemanda(id, valor){
     var dato = {id: id, demanda: valor};
     demandas.push(dato);
+    flag = true;
+    // console.log(demandas);
+
 }
 
 
