@@ -20,47 +20,6 @@ function llenarValoresMatriz (){
         }
     }
 }
-function esquinaNoroeste(){
-    var res = [];
-    var val = [];
-    var x = 0;
-    var y = 0;
-    while(x<origenesId.length && y<destinosId.length){
-        //Se consigue la esquina noroeste.
-        var nor = buscarValorFlecha(origenesId[x]+destinosId[y]);
-        console.log("La esquina noroeste en este casp es: "+nor);
-        if(parseInt(valoresOfertas[x])>parseInt(valoresDemandas[y])){
-            //La oferta es mayor que la demanda en este caso.
-            valoresOfertas[x] = parseInt(valoresOfertas[x])-parseInt(valoresDemandas[y]);
-            res.push(buscarValorFlecha(origenesId[x]+destinosId[y]));
-            console.log("La demanda "+valoresDemandas[y]+" se elimina.");
-            val.push(parseInt(valoresDemandas[y]));
-            //Se sigue a la siguiente columna.
-            y++;
-        } else if(parseInt(valoresOfertas[x])<parseInt(valoresDemandas[y])){
-            //La demanda es mayor que la oferta en este caso.
-            valoresDemandas[y] = parseInt(valoresDemandas[y])-parseInt(valoresOfertas[x]);
-            res.push(buscarValorFlecha(origenesId[x]+destinosId[y]));
-            console.log("La oferta "+valoresOfertas[x]+" se elimina.");
-            val.push(parseInt(valoresOfertas[x]));
-            //Se sigue a la siguiente columna.
-            x++;
-        } else if(parseInt(valoresOfertas[x])==parseInt(valoresDemandas[y])){
-            //La demanda y la oferta son iguales.
-            res.push(buscarValorFlecha(origenesId[x]+destinosId[y]));//Se guarda el valor de esta esquina noroeste.
-            val.push(parseInt(valoresOfertas[x]));//Se guarda el valor de oferta demanda usado.
-            console.log("La demanda y la oferta se elimina.");
-            //Se sigue con la siguiente columna e hilera/fila.
-            x++;
-            y++;
-        }
-    }
-    //res.extend(val);
-    for(i=0; i<val.length; i++){
-        res.push(val);
-    }
-    return res;
-}
 
 function buscarValorFlecha(id){
     var valor = 0;

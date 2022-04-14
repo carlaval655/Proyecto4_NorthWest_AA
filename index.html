@@ -284,6 +284,7 @@
       //Nuevo
       agregarOfertas();
       agregarDemandas();
+      mostrarMatriz();
       //
       eliminarBloqueComentario();
       document.querySelector("#habilitar-div").classList.remove('habilitar-activo');
@@ -403,7 +404,9 @@
     <!-- Ingresar ofertas y demandas -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ofertaDemanda" onclick="mostrarInputOfertasyDemandas()">Ingresar ofertas y demandas</button>
     <!-- Northwest -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="esquinaNoroeste()">NorthWest</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="mostrarMaximizacion(false)">Minimizacion</button>
+    <!-- Northwest -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#minimizacion" onclick="mostrarMaximizacion(true)">Maximizacion</button>
     <!-- Guardar graphy -->
     <button type="button" class="btn btn-primary" data-toggle="modal" id="guardarGrafo" data-target="#inputNombreArchivo" onclick="">Guardar graphy</button>
     <!-- Subir graphy -->
